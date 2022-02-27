@@ -11,6 +11,12 @@ python = "^3.9"
 pytest = "^7.0.1"
 pre-commit = "^2.17.0"
 pylint = "^2.12.2"
+toml = "^0.10.2"
+
+[tool.pydocstyle]
+convention="google"
+match = '^((?!test_).)*\.py'
+add-ignore =  ["D100", "D104"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
