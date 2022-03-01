@@ -27,3 +27,32 @@ def test_scale_row_too_big_row():
     # Act
     with pytest.raises(AssertionError):
         mat = sut.scale_row(mat, 2, -0.5)
+
+
+def test_row_combine():
+    # Arrange
+    mat = np.arange(9, dtype=float).reshape((3, 3))
+    # Act
+    res = sut.row_combine(mat=mat, row1=0, row2=1, factor=-0.5)
+    # Assert
+    assert np.allclose(
+        np.array([[-1.5, -1.0, -0.5], [3.0, 4.0, 5.0], [6.0, 7.0, 8.0]]), res
+    )
+
+
+def test_pivot():
+    # Arrange
+    mat = np.arange(9, dtype=float).reshape((3, 3))
+    # Act
+    res = sut.pivot(mat, row=1, col=1)
+    # Assert
+    np.allclose(
+        np.array(
+            [
+                [0.0 - 1.0 * 0.75, 0.0, 2.0 - 1.0 * 1.25],
+                [0.75, 1.0, 1.25],
+                [6.0 - 7 * 0.75, 0.0, 8.0 - 7 * 1.25],
+            ]
+        ),
+        res,
+    )

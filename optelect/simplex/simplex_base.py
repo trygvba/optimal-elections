@@ -1,4 +1,6 @@
 """Module for basic simplex algorithm."""
+from typing import Optional
+
 import numpy as np
 from numpy.typing import ArrayLike, NDArray
 
@@ -10,6 +12,8 @@ class SimplexBase:
     maximize c^T * x, under the constraints
     A * x <= b, and x >= 0.
     """
+
+    weight_tol: float = 1e-8
 
     def __init__(self, mat: ArrayLike, bvec: ArrayLike, cvec: ArrayLike):
         """Create a SimplexBase object.
@@ -75,3 +79,33 @@ class SimplexBase:
         ] = np.eye(self.num_constraints, dtype=float)
         tab[1:, -1] = self._b.T
         return tab
+
+    def get_pivot_column(self) -> Optional[int]:
+        """Returns the best candidate for pivot column.
+
+        Based on current form of the program tableay.
+
+        Returns:
+            Index of the column to pivot.
+            Index is relative to tableau.
+            If None, then no column will yield a better
+            basic feasible then what you currently have.
+        """
+        obj_diff = self.tableau[0, 1 : (self.num_constraints + self.num_unknowns)]
+        # Check if no weights are positive:
+        if np.all(obj_diff < self.weight_tol):
+            return None
+        return 1 + np.argmax(obj_diff, axis=0)
+
+    def get_pivot_row(self, col: int) -> int:
+        """Returns the best candidate for pivot row.
+
+        Based on current form of the program tableau.
+
+        Args:
+            col: Index of column to pivot against.
+
+        Returns:
+            Index of the row to pivot
+        """
+        return 1 + np.argmin(self.tableau[1:, -1] / self.tableau[1:, col])
