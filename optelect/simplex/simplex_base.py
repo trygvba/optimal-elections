@@ -30,6 +30,14 @@ class SimplexBase:
         ), "Length of c must equal number of columns in matrix."
         self.tableau = self._assemble_tableau()
 
+        # For now we'll just assume our initial BFS is the corner
+        # at the vertex.
+        self._basic_vars = np.arange(
+            start=self.num_unknowns,
+            stop=self.num_unknowns + self.num_constraints,
+            dtype=int,
+        )
+
     @property
     def num_unknowns(self) -> int:
         """Number of unknowns in linear program."""
@@ -39,6 +47,18 @@ class SimplexBase:
     def num_constraints(self) -> int:
         """Number of constraints in linear program."""
         return self._mat.shape[0]
+
+    @property
+    def current_basic_variables(self) -> NDArray:
+        """Get current basic variables."""
+        return self._basic_vars
+
+    @property
+    def current_solution(self) -> NDArray:
+        """Get current basic feasible solution."""
+        res = np.zeros(self.num_constraints + self.num_unknowns)
+        res[self._basic_vars] = self.tableau[1:, -1]
+        return res[: self.num_unknowns]
 
     def _assemble_tableau(self) -> NDArray:
         """Create the standard tableay for linear program."""

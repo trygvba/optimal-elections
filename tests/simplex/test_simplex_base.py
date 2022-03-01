@@ -18,3 +18,5 @@ def test_simplex_base():
             [[1, 2, 3, 4, 0, 0, 0], [0, 3, 2, 1, 1, 0, 10], [0, 2, 5, 3, 0, 1, 15]]
         ),
     )
+    assert np.all(np.array([3, 4]) == linprob.current_basic_variables)
+    assert np.allclose(np.zeros(3), linprob.current_solution)
