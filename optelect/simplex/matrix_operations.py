@@ -59,5 +59,5 @@ def pivot(mat: NDArray, row: int, col: int) -> NDArray:
     mat = scale_row(mat, row=row, factor=1.0 / mat[row, col])
     for rid in range(mat.shape[0]):
         if rid != row:
-            mat = row_combine(mat=mat, row1=rid, row2=row, factor=-1.0 / mat[rid, col])
+            mat = row_combine(mat=mat, row1=rid, row2=row, factor=-mat[rid, col])
     return mat

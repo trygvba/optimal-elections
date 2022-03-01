@@ -39,3 +39,9 @@ def test_first_iteration(linprob):
     assert not linprob.iterate()
     assert np.all(np.array([3, 2]) == linprob.current_basic_variables)
     assert np.allclose(np.array([0.0, 0.0, 5.0]), linprob.current_solution)
+
+
+def test_solution(linprob):
+    assert not linprob.iterate()
+    # In tis particular case, we only need one iteration
+    assert linprob.iterate()
