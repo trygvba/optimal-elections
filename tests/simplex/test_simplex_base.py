@@ -33,3 +33,9 @@ def test_first_pivot(linprob):
     pcol = linprob.get_pivot_column()
     assert pcol == 3
     assert linprob.get_pivot_row(pcol) == 2
+
+
+def test_first_iteration(linprob):
+    assert not linprob.iterate()
+    assert np.all(np.array([3, 2]) == linprob.current_basic_variables)
+    assert np.allclose(np.array([0.0, 0.0, 5.0]), linprob.current_solution)

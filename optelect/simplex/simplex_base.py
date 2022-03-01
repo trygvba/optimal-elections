@@ -4,6 +4,8 @@ from typing import Optional
 import numpy as np
 from numpy.typing import ArrayLike, NDArray
 
+from .matrix_operations import pivot
+
 
 class SimplexBase:
     """Class for basic simplex algorithm.
@@ -14,6 +16,7 @@ class SimplexBase:
     """
 
     weight_tol: float = 1e-8
+    max_iterations: int = 1000
 
     def __init__(self, mat: ArrayLike, bvec: ArrayLike, cvec: ArrayLike):
         """Create a SimplexBase object.
@@ -108,4 +111,32 @@ class SimplexBase:
         Returns:
             Index of the row to pivot
         """
+        # TODO: Also need to make sure that all variables will remain positive.
         return 1 + np.argmin(self.tableau[1:, -1] / self.tableau[1:, col])
+
+    @staticmethod
+    def local_index(index: int) -> int:
+        """Get unknowns index from tableau index."""
+        return index - 1
+
+    def iterate(self) -> bool:
+        """Make one iteration of the simplex algorithm.
+
+        Based on current state of program.
+
+        Returns:
+            True if solution has already been reached (no change)
+            False, otherwise.
+        """
+        # First, we find the pivot column
+        if pcol := self.get_pivot_column():
+            # Then get pivot row
+            prow = self.get_pivot_row(col=pcol)
+            # We should pivot, god damn it
+            self.tableau = pivot(mat=self.tableau, row=prow, col=pcol)
+            # Finally, exchange the basic variables.
+            old_basic = self._basic_vars[self.local_index(prow)]
+            new_basic = self.local_index(pcol)
+            self._basic_vars[self._basic_vars == old_basic] = new_basic
+            return False
+        return True

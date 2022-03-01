@@ -56,8 +56,8 @@ def pivot(mat: NDArray, row: int, col: int) -> NDArray:
     """
     assert abs(mat[row, col]) > 1e-8, "Cannot pivot around a 0 element of a matrix"
     # First scale the row so we have a one at the pivot element:
-    mat = scale_row(mat, row=row, factor=mat[row, col])
+    mat = scale_row(mat, row=row, factor=1.0 / mat[row, col])
     for rid in range(mat.shape[0]):
         if rid != row:
-            mat = row_combine(mat=mat, row1=rid, row2=row, factor=-mat[rid, col])
+            mat = row_combine(mat=mat, row1=rid, row2=row, factor=-1.0 / mat[rid, col])
     return mat
